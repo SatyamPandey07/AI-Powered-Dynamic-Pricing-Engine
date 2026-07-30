@@ -6,4 +6,5 @@ from .tenant import (
     Competitor, CompetitorSKUMapping, WeatherSignal, EventSignal,
     ElasticityMeasurement, PricingTest, PriceRecommendation, PricingRule,
     Integration, IntegrationCredentialHistory, SyncLog,
+    Webhook, WebhookDelivery,
 )

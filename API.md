@@ -70,3 +70,12 @@
 
 ## Webhooks (Inbound)
 - `POST /api/webhooks/integrations/{integration_id}`: Receive and process platform webhooks (HMAC-SHA256 verified).
+
+## Webhooks (Outbound)
+- `POST /api/webhooks/register`: Register a new outbound webhook.
+- `GET /api/webhooks`: List all outbound webhooks for the org.
+- `PUT /api/webhooks/{id}`: Update webhook target or subscriptions.
+- `DELETE /api/webhooks/{id}`: Deactivate a webhook.
+- `GET /api/webhooks/{id}/deliveries`: List delivery history and retry status.
+- `POST /api/webhooks/{id}/retry`: Manually retry a failed delivery.
+- `POST /api/webhooks/{id}/test`: Trigger a test webhook payload.

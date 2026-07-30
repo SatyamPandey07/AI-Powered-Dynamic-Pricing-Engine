@@ -56,3 +56,47 @@ X-Hub-Signature-256: sha256=<hmac_hex>
 - If verification fails, a `403 Forbidden` is returned immediately.
 - If no signature header is present, the request is allowed but flagged in logs.
 - Each processed webhook is logged to `sync_logs` with `sync_type=webhook`.
+
+---
+
+# Outbound Webhooks
+
+The system can push real-time events to external systems (e.g., e-commerce platforms, ERPs, analytics).
+
+## Registration
+
+Register an outbound webhook via `POST /api/webhooks/register`:
+```json
+{
+  "endpoint_type": "price.updated",
+  "target_url": "https://example.com/webhook",
+  "events_subscribed": ["price.updated", "forecast.generated"]
+}
+```
+
+The response contains a `signing_secret`.
+
+## Signature Verification (External Systems)
+
+Every outbound webhook includes an `X-Webhook-Signature` header:
+```
+X-Webhook-Signature: sha256=<hmac_hex>
+```
+
+You can verify the payload on your server:
+```python
+import hmac, hashlib
+computed = "sha256=" + hmac.new(SIGNING_SECRET.encode(), request_body, hashlib.sha256).hexdigest()
+assert computed == request.headers["X-Webhook-Signature"]
+```
+
+## Retry and Idempotency
+
+- Failed deliveries are automatically retried using **exponential backoff** (e.g., 1m, 5m, 30m, 2h).
+- Max retries: 5 attempts.
+- Payload includes a `webhook_id` and `timestamp`. Use these to ensure idempotent processing on your end.
+
+## Delivery History
+
+Check delivery logs via `GET /api/webhooks/{webhook_id}/deliveries`. You can manually trigger a retry via `POST /api/webhooks/{webhook_id}/retry`.
+
