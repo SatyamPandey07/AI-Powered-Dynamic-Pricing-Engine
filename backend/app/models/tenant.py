@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Float, Enum, JSON
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Float, Enum, JSON, Boolean
 from sqlalchemy.sql import func
 from .base import Base
 import enum
@@ -13,6 +13,7 @@ class Organization(Base):
     id = Column(String, primary_key=True, index=True)
     name = Column(String, index=True)
     subscription_tier = Column(String)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
@@ -23,6 +24,14 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     role = Column(Enum(RoleEnum))
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class PasswordHistory(Base):
+    __tablename__ = "password_history"
+    id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"))
+    hashed_password = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class ApiKey(Base):
