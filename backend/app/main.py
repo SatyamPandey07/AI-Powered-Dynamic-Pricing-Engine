@@ -4,7 +4,7 @@ from app.config import settings
 from app.middleware.tenant import TenantMiddleware
 from app.middleware.security import SecurityHeadersMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routers import auth, orgs, users, api_keys, audit_logs, forecast, competitors, signals, prices, elasticity, optimize, rules
+from app.routers import auth, orgs, users, api_keys, audit_logs, forecast, competitors, signals, prices, elasticity, optimize, rules, integrations, webhooks
 import logging
 
 logging.basicConfig(level=settings.LOG_LEVEL)
@@ -34,6 +34,8 @@ app.include_router(prices.router)
 app.include_router(elasticity.router)
 app.include_router(optimize.router)
 app.include_router(rules.router)
+app.include_router(integrations.router)
+app.include_router(webhooks.router)
 
 @app.get("/health")
 def health_check(request: Request):

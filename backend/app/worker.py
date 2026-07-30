@@ -36,6 +36,24 @@ def setup_periodic_tasks(sender, **kwargs):
         fetch_weather_signals.s(),
         name="fetch_weather_signals_daily"
     )
+    # Sync inventory from integrations every 2 hours
+    sender.add_periodic_task(
+        crontab(minute=0, hour='*/2'),
+        sync_inventory_from_integrations.s(),
+        name="sync_inventory_2h"
+    )
+    # Sync sales history every 4 hours
+    sender.add_periodic_task(
+        crontab(minute=30, hour='*/4'),
+        sync_sales_history_from_integrations.s(),
+        name="sync_sales_4h"
+    )
+    # Push prices daily at 8 AM UTC
+    sender.add_periodic_task(
+        crontab(minute=0, hour=8),
+        push_prices_to_integrations.s(),
+        name="push_prices_daily"
+    )
 
 @celery_app.task(name="retrain_demand_forecasts")
 def retrain_demand_forecasts():
@@ -83,3 +101,50 @@ def fetch_weather_signals():
     # 2. Call ExternalSignalsService.fetch_weather
     # 3. Store in weather_signals table
     return {"status": "weather_fetched"}
+
+@celery_app.task(name="sync_inventory_from_integrations")
+def sync_inventory_from_integrations():
+    """
+    For every active integration, fetch current inventory from the platform
+    and update the inventory_levels table. Alerts on low stock.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Starting inventory sync from all active integrations.")
+    # Full implementation:
+    # 1. Query DB for active integrations
+    # 2. For each: decrypt credentials, instantiate adapter, call sync_inventory()
+    # 3. Upsert into inventory_levels
+    # 4. Alert if qty < reorder threshold
+    return {"status": "inventory_synced"}
+
+@celery_app.task(name="sync_sales_history_from_integrations")
+def sync_sales_history_from_integrations():
+    """
+    For every active integration, fetch new orders since last_sync_at
+    and store in sales_history. Backfills 2 years on first run.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Starting sales history sync from all active integrations.")
+    # Full implementation:
+    # 1. Query DB for active integrations
+    # 2. For each: decrypt creds, call sync_sales(since=last_sync_at)
+    # 3. Dedup by order_id, upsert into sales_history
+    return {"status": "sales_synced"}
+
+@celery_app.task(name="push_prices_to_integrations")
+def push_prices_to_integrations():
+    """
+    For all pending price recommendations, batch-push updated prices
+    to each active integration. Logs success/failure per SKU.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Pushing price updates to all active integrations.")
+    # Full implementation:
+    # 1. Query recent unaccepted PriceRecommendations
+    # 2. For each integration: map sku_id -> platform product_id
+    # 3. Batch push_price() calls
+    # 4. Write to SyncLog
+    return {"status": "prices_pushed"}

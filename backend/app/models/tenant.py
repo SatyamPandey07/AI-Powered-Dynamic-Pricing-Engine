@@ -226,3 +226,37 @@ class PricingRule(Base):
     priority = Column(Integer, default=0)
     last_applied_at = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class Integration(Base):
+    __tablename__ = "integrations"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    platform = Column(String)           # shopify | woocommerce | custom
+    name = Column(String)
+    status = Column(String, default="pending_auth")  # connected | disconnected | error | pending_auth
+    error_message = Column(String)
+    credentials = Column(String)        # Fernet-encrypted JSON text
+    config = Column(JSON)               # sync_frequency_hours, field_mappings, etc.
+    last_sync_at = Column(DateTime(timezone=True))
+    next_sync_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class IntegrationCredentialHistory(Base):
+    __tablename__ = "integration_credentials_history"
+    id = Column(String, primary_key=True, index=True)
+    integration_id = Column(String, ForeignKey("integrations.id"))
+    old_credentials_hash = Column(String)
+    new_credentials_hash = Column(String)
+    changed_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class SyncLog(Base):
+    __tablename__ = "sync_logs"
+    id = Column(String, primary_key=True, index=True)
+    integration_id = Column(String, ForeignKey("integrations.id"))
+    sync_type = Column(String)          # inventory | sales | prices
+    status = Column(String)             # running | completed | failed
+    items_processed = Column(Integer, default=0)
+    error_count = Column(Integer, default=0)
+    errors = Column(JSON)
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    completed_at = Column(DateTime(timezone=True))
