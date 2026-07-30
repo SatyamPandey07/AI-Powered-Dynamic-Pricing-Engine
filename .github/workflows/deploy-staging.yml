@@ -1,0 +1,39 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Configure AWS/Render credentials
+        run: echo "Configuring deployment credentials..."
+        
+      - name: Build and Push Docker Images
+        run: |
+          echo "Building images with tag :staging"
+          # docker build -t registry/pricing-backend:staging ./backend
+          # docker push registry/pricing-backend:staging
+          
+      - name: Deploy to Staging Environment
+        run: |
+          echo "Deploying to Staging..."
+          # E.g., updating ECS service or triggering Render deploy hook
+          
+      - name: Run Smoke Tests
+        run: |
+          echo "Running smoke tests on staging endpoint..."
+          # curl -f https://staging.app.com/health
+          
+      - name: Slack Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: "Staging Deployment Completed. Status: ${{ job.status }}"

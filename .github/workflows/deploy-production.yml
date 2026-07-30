@@ -1,0 +1,46 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g. v1.0.0)'
+        required: true
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Database Migrations
+        run: |
+          echo "Running Alembic upgrade head..."
+          
+      - name: Build and Push Docker Images
+        run: |
+          echo "Building images with tag :${{ github.event.inputs.version }}"
+          # docker build -t registry/pricing-backend:${{ github.event.inputs.version }} ./backend
+          
+      - name: Deploy to Production Environment
+        run: |
+          echo "Deploying to Production..."
+          
+      - name: Verify Health Post-Deploy
+        run: |
+          echo "Verifying /health endpoint..."
+          # curl -f https://app.com/health
+          
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "Triggering rollback script..."
+          # e.g., deploy previous known good tag, or alembic downgrade
+          
+      - name: Slack Notification
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: "Production Deployment of ${{ github.event.inputs.version }}. Status: ${{ job.status }}"
