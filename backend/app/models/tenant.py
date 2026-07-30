@@ -124,3 +124,16 @@ class AuditLog(Base):
     ip_address = Column(String)
     user_agent = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class ModelVersion(Base):
+    __tablename__ = "model_versions"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    sku_id = Column(String, ForeignKey("skus.id"))
+    model_type = Column(String)
+    accuracy_mape = Column(Float)
+    accuracy_mae = Column(Float)
+    trained_at = Column(DateTime(timezone=True), server_default=func.now())
+    activated_at = Column(DateTime(timezone=True))
+    model_artifact = Column(String)
+    parameters = Column(JSON)
