@@ -63,23 +63,6 @@ class Supplier(Base):
     auth_type = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-class Competitor(Base):
-    __tablename__ = "competitors"
-    id = Column(String, primary_key=True, index=True)
-    org_id = Column(String, ForeignKey("organizations.id"))
-    name = Column(String)
-    website_url = Column(String)
-    api_type = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class CompetitorSkuMapping(Base):
-    __tablename__ = "competitor_sku_mappings"
-    id = Column(String, primary_key=True, index=True)
-    competitor_id = Column(String, ForeignKey("competitors.id"))
-    sku_id = Column(String, ForeignKey("skus.id"))
-    competitor_sku_id = Column(String)
-    last_price = Column(Float)
-    last_checked_at = Column(DateTime(timezone=True))
 
 class PriceHistory(Base):
     __tablename__ = "price_history"
@@ -181,3 +164,65 @@ class EventSignal(Base):
     event_date = Column(DateTime(timezone=True))
     affected_skus = Column(JSON) # List of SKU IDs
     impact_percent = Column(Float)
+
+class ElasticityMeasurement(Base):
+    __tablename__ = "elasticity_measurements"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    sku_id = Column(String, ForeignKey("skus.id"))
+    elasticity_value = Column(Float)
+    confidence_lower = Column(Float)
+    confidence_upper = Column(Float)
+    data_points = Column(Integer)
+    r_squared = Column(Float)
+    calculated_at = Column(DateTime(timezone=True), server_default=func.now())
+    model_type = Column(String, default="regression")  # regression | ab_test
+
+class PricingTest(Base):
+    __tablename__ = "pricing_tests"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    sku_id = Column(String, ForeignKey("skus.id"))
+    control_price = Column(Float)
+    treatment_price = Column(Float)
+    traffic_split = Column(Float, default=0.5)
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    ended_at = Column(DateTime(timezone=True))
+    control_conversions = Column(Integer, default=0)
+    treatment_conversions = Column(Integer, default=0)
+    control_revenue = Column(Float, default=0.0)
+    treatment_revenue = Column(Float, default=0.0)
+    p_value = Column(Float)
+    confidence = Column(Float, default=0.95)
+    winner = Column(String)  # control | treatment | no_significant_difference
+    winner_revenue_lift = Column(Float)
+    status = Column(String, default="running")  # running | completed
+
+class PriceRecommendation(Base):
+    __tablename__ = "price_recommendations"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    sku_id = Column(String, ForeignKey("skus.id"))
+    recommended_price = Column(Float)
+    current_price = Column(Float)
+    objective = Column(String)  # revenue | margin | clearance
+    expected_revenue_impact = Column(Float)
+    expected_margin_impact = Column(Float)
+    confidence_score = Column(Float)
+    reasoning = Column(String)
+    factors = Column(JSON)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    accepted_at = Column(DateTime(timezone=True))
+    actual_impact = Column(Float)
+
+class PricingRule(Base):
+    __tablename__ = "pricing_rules"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    name = Column(String)
+    condition = Column(JSON)
+    action = Column(JSON)
+    active = Column(Boolean, default=True)
+    priority = Column(Integer, default=0)
+    last_applied_at = Column(DateTime(timezone=True))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

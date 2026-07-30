@@ -1,15 +1,11 @@
 from fastapi import Request, HTTPException, status
 from typing import Callable, Any
 from functools import wraps
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 def get_rate_limit_key(request: Request):
     if hasattr(request.state, 'user_id') and request.state.user_id:
         return request.state.user_id
-    return get_remote_address(request)
-
-limiter = Limiter(key_func=get_rate_limit_key)
+    return request.client.host if request.client else "unknown"
 
 def require_auth(request: Request):
     if not hasattr(request.state, "user_id") or not request.state.user_id:
