@@ -17,6 +17,9 @@ logger.addHandler(logHandler)
 app = FastAPI(title="Dynamic Pricing Engine API")
 app.add_middleware(CorrelationIdMiddleware)
 
+from app.routers import experiments
+app.include_router(experiments.router)
+
 # Prometheus Metrics
 REQUEST_COUNT = Counter('api_request_count', 'Total API requests', ['method', 'endpoint', 'http_status'])
 REQUEST_LATENCY = Histogram('api_request_latency_seconds', 'API request latency', ['method', 'endpoint'])
