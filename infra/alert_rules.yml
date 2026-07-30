@@ -1,0 +1,51 @@
+groups:
+  - name: API_Alerts
+    rules:
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.99, sum(rate(api_request_latency_seconds_bucket[5m])) by (le)) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API Latency on {{ $labels.instance }}"
+          description: "API p99 latency > 5s for 5m. Current value: {{ $value }}s"
+
+      - alert: HighErrorRate
+        expr: sum(rate(api_request_count{http_status=~"5.."}[5m])) / sum(rate(api_request_count[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High Error Rate on {{ $labels.instance }}"
+          description: "API 5xx error rate > 5% for 5m. Current value: {{ $value | humanizePercentage }}"
+
+  - name: Infrastructure_Alerts
+    rules:
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database is down"
+          description: "Postgres has been unreachable for 1 minute."
+
+  - name: Business_Alerts
+    rules:
+      - alert: ForecastAccuracyDropped
+        expr: forecast_mape > 30
+        for: 7d
+        labels:
+          severity: warning
+        annotations:
+          summary: "Forecast accuracy poor"
+          description: "MAPE > 30% for 7 days."
+
+      - alert: WebhookDeliveryFailed
+        expr: webhook_success_rate < 0.95
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Webhook delivery failing"
+          description: "Webhook success rate < 95%."
