@@ -27,7 +27,7 @@ class ExperimentationService:
         try:
             chi2, p_value, dof, expected = stats.chi2_contingency(observed)
             confidence = 1 - p_value
-            significant = p_value < 0.05
+            significant = bool(p_value < 0.05)
             return {
                 "p_value": round(p_value, 4),
                 "confidence": round(confidence, 4),
