@@ -260,3 +260,28 @@ class SyncLog(Base):
     errors = Column(JSON)
     started_at = Column(DateTime(timezone=True), server_default=func.now())
     completed_at = Column(DateTime(timezone=True))
+
+class Webhook(Base):
+    __tablename__ = "webhooks"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    endpoint_type = Column(String)       # price / forecast / alert
+    target_url = Column(String)
+    events_subscribed = Column(JSON)     # e.g., ["price.updated", "forecast.generated"]
+    signing_secret = Column(String)      # HMAC-SHA256 secret
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class WebhookDelivery(Base):
+    __tablename__ = "webhook_deliveries"
+    id = Column(String, primary_key=True, index=True)
+    webhook_id = Column(String, ForeignKey("webhooks.id"))
+    event_type = Column(String)
+    payload = Column(JSON)
+    status = Column(String, default="pending")  # pending | success | failed
+    attempt_number = Column(Integer, default=0)
+    next_retry_at = Column(DateTime(timezone=True))
+    response_code = Column(Integer)
+    response_body = Column(String)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
