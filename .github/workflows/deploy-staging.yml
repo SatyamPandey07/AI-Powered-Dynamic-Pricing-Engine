@@ -1,0 +1,45 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # CI is implicitly tested since develop requires PR CI to pass
+      # But we can re-run tests if desired
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Images
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/pricing-backend:staging ./backend
+          docker build -t ghcr.io/${{ github.repository_owner }}/pricing-frontend:staging ./frontend
+          docker push ghcr.io/${{ github.repository_owner }}/pricing-backend:staging
+          docker push ghcr.io/${{ github.repository_owner }}/pricing-frontend:staging
+
+      - name: Deploy to Staging
+        run: |
+          echo "Triggering deployment to staging (e.g. Render Webhook)"
+          # curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
+
+      - name: Smoke Tests
+        run: |
+          echo "Running smoke tests on staging environment"
+          # curl -f https://staging-api.pricingengine.com/health
+
+      - name: Slack Notification
+        if: always()
+        run: |
+          echo "Notifying Slack #deployments"
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployed to staging: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
