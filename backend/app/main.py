@@ -40,8 +40,9 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(TenantMiddleware)
 
-from app.routers import experiments
+from app.routers import experiments, analytics
 app.include_router(experiments.router)
+app.include_router(analytics.router)
 
 # Prometheus Metrics
 from app.metrics import REQUEST_COUNT, REQUEST_LATENCY
