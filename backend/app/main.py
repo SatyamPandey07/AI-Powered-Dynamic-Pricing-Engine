@@ -18,8 +18,7 @@ app = FastAPI(title="Dynamic Pricing Engine API")
 app.add_middleware(CorrelationIdMiddleware)
 
 # Prometheus Metrics
-REQUEST_COUNT = Counter('api_request_count', 'Total API requests', ['method', 'endpoint', 'http_status'])
-REQUEST_LATENCY = Histogram('api_request_latency_seconds', 'API request latency', ['method', 'endpoint'])
+from app.metrics import REQUEST_COUNT, REQUEST_LATENCY
 app.mount("/metrics", make_asgi_app())
 
 @app.middleware("http")
