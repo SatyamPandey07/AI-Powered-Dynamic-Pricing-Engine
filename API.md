@@ -22,3 +22,9 @@
 
 ## Audit Logs
 - `GET /api/audit-logs`: View organization audit logs with optional filtering.
+
+## Demand Forecasting
+- `POST /api/forecast/train`: Train Prophet/ARIMA ensemble models for a specific SKU.
+- `GET /api/forecast/predict/{sku_id}`: Generate a forecast for the next N days.
+- `GET /api/forecast/accuracy/{sku_id}`: Retrieve model accuracy metrics (MAPE/MAE).
+- `POST /api/forecast/retrain`: Manually trigger the Celery retraining pipeline.
