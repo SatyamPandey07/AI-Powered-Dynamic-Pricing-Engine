@@ -2,9 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
 ### Added
-- **PR #1-8**: Initial scaffolding, Multi-Tenant Database, RBAC, Pricing Engine (Prophet/ARIMA), External Competitor tracking, and Next.js Dashboard.
-- **PR #9**: Added Prometheus, Grafana, Loki, and Promtail for monitoring and alerting.
-- **PR #10**: CI/CD pipelines (GitHub Actions) for Staging and Production deployment, including Dockerfiles and Trivy security scanning.
+- CI/CD pipelines via GitHub Actions
+- Multi-stage Dockerfiles for backend and frontend
+- Staging and production deployment workflows
+- Monitoring and observability endpoints
+- Competitor tracking and dynamic pricing rules

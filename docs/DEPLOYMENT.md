@@ -1,17 +1,23 @@
 # Deployment Guide
 
-The application is deployed using GitHub Actions pipelines.
+This document outlines the deployment strategy for the AI-Powered Dynamic Pricing Engine.
 
 ## Environments
-- **Staging**: `develop` branch automatically deploys to staging.
-- **Production**: Manual trigger targeting `main` or specific tags.
+1. **Development**: Local environment using `docker-compose`.
+2. **Staging**: Automatically deployed from `develop` branch.
+3. **Production**: Manually deployed from `main` branch.
 
-## Infrastructure Options
-1. **Render (Default)**: We use Render Web Services for both backend and frontend. The `render.yaml` (if added) configures IaC.
-2. **AWS ECS**: Scalable, load-balanced deployment.
+## Staging Deployment
+Pushes to the `develop` branch automatically trigger `.github/workflows/deploy-staging.yml`.
+- Docker images are built and pushed to GHCR with the `staging` tag.
+- The staging environment pulls the latest image.
 
-## Deployment Checklist
-- [ ] CI pipeline (tests, linting, Trivy scan) passes.
-- [ ] No CRITICAL vulnerabilities in the Docker image.
-- [ ] Staging environment has been stable for >1 hour.
-- [ ] Runbook has been reviewed and team lead has given approval.
+## Production Deployment
+Production deployments are manually triggered via GitHub Actions -> **Deploy to Production** (`workflow_dispatch`).
+- Ensure all CI tests pass.
+- Images are tagged with the Git SHA and `latest`.
+- Database migrations are run automatically.
+- After deployment, a smoke test runs against the production health endpoint.
+
+## Secrets
+All secrets (database credentials, API keys) must be injected via environment variables and configured in your hosting provider (e.g. Render/AWS) and GitHub Actions Secrets (`SLACK_WEBHOOK_URL`, `RENDER_PROD_DEPLOY_HOOK`).
