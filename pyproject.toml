@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "dynamic-pricing-engine"
+version = "0.1.0"
+description = "AI-Powered Dynamic Pricing Engine"
+authors = ["Satyam Pandey"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

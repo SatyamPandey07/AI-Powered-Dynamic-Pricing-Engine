@@ -1,0 +1,9 @@
+ALTER TABLE organizations ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+
+CREATE TABLE IF NOT EXISTS password_history (
+    id VARCHAR PRIMARY KEY,
+    user_id VARCHAR REFERENCES users(id),
+    hashed_password VARCHAR,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
