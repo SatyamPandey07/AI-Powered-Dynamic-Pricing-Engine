@@ -41,3 +41,19 @@
 ## External Signals
 - `POST /api/signals/weather`: Fetch weather for the organization's location.
 - `POST /api/signals/events`: Add a custom event affecting SKU demand.
+
+## Price Elasticity
+- `GET /api/elasticity/{sku_id}`: Calculate or retrieve elasticity estimate with confidence interval.
+- `POST /api/elasticity/test/{sku_id}`: Start an A/B pricing test.
+- `GET /api/elasticity/test/{test_id}`: View A/B test results and statistical winner.
+
+## Price Optimization
+- `POST /api/optimize/price`: Get an AI-driven price recommendation for a SKU.
+- `GET /api/optimize/{sku_id}/recommendation`: Fetch latest recommendation for a SKU.
+- `POST /api/optimize/scenario`: Simulate the revenue/demand impact of a hypothetical price.
+- `POST /api/optimize/markdown/{sku_id}`: Get a proactive markdown schedule for aging inventory.
+
+## Pricing Rules
+- `POST /api/rules`: Create a pricing guardrail rule.
+- `GET /api/rules`: List all pricing rules.
+- `PUT /api/rules/{id}`: Activate or deactivate a rule.
