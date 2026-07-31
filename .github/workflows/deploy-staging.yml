@@ -8,32 +8,38 @@ on:
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
-    environment: staging
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Configure AWS/Render credentials
-        run: echo "Configuring deployment credentials..."
-        
+
+      # CI is implicitly tested since develop requires PR CI to pass
+      # But we can re-run tests if desired
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Push Docker Images
         run: |
-          echo "Building images with tag :staging"
-          # docker build -t registry/pricing-backend:staging ./backend
-          # docker push registry/pricing-backend:staging
-          
-      - name: Deploy to Staging Environment
+          docker build -t ghcr.io/${{ github.repository_owner }}/pricing-backend:staging ./backend
+          docker build -t ghcr.io/${{ github.repository_owner }}/pricing-frontend:staging ./frontend
+          docker push ghcr.io/${{ github.repository_owner }}/pricing-backend:staging
+          docker push ghcr.io/${{ github.repository_owner }}/pricing-frontend:staging
+
+      - name: Deploy to Staging
         run: |
-          echo "Deploying to Staging..."
-          # E.g., updating ECS service or triggering Render deploy hook
-          
-      - name: Run Smoke Tests
+          echo "Triggering deployment to staging (e.g. Render Webhook)"
+          # curl -X POST ${{ secrets.RENDER_STAGING_DEPLOY_HOOK }}
+
+      - name: Smoke Tests
         run: |
-          echo "Running smoke tests on staging endpoint..."
-          # curl -f https://staging.app.com/health
-          
+          echo "Running smoke tests on staging environment"
+          # curl -f https://staging-api.pricingengine.com/health
+
       - name: Slack Notification
         if: always()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Staging Deployment Completed. Status: ${{ job.status }}"
+        run: |
+          echo "Notifying Slack #deployments"
+          # curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployed to staging: ${{ job.status }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
