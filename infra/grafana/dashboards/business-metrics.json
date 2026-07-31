@@ -1,0 +1,25 @@
+{
+  "title": "Business Metrics",
+  "uid": "bus-metrics",
+  "tags": [
+    "business-metrics"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "panels": [
+    {
+      "type": "text",
+      "title": "Business Metrics Overview",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "content": "# Business Metrics\nPlaceholder for Business Metrics metrics."
+      }
+    }
+  ]
+}
