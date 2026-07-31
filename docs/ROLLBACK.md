@@ -1,16 +1,16 @@
 # Rollback Strategy
 
-If a deployment to production fails or introduces critical bugs, follow these steps to roll back.
+## Automated Rollback
+Currently, the pipeline monitors the 5-minute error rate post-deployment. If it exceeds 5%, an alert is fired to Slack. In a fully managed environment like Render or Kubernetes, you can configure automatic traffic shifting or rollback based on these health checks failing.
 
-## 1. Automated Rollback (Application)
-The CI/CD pipeline is configured to alert and suggest rollback if the error rate exceeds 5% post-deployment.
-To manually trigger a rollback:
-1. Go to GitHub Actions -> `Deploy to Production`.
-2. Click "Run workflow".
-3. Provide the previous known-good version tag (e.g. `v1.0.0`).
+## Manual Rollback
+If a production deployment introduces a critical bug:
+1. Go to your hosting provider's dashboard (e.g., Render).
+2. Select the previous successful deployment and click **"Rollback to this deploy"**.
+3. (Alternatively) If using manual Docker commands, update the orchestration to use the previous Git SHA tag instead of `latest`.
 
-## 2. Database Rollback
-If the deployment included a database migration (Alembic) that needs reverting:
-1. SSH or connect to a production worker pod.
-2. Run `alembic downgrade -1` (or specify the target revision).
-3. Verify database consistency before rolling back the application code.
+## Database Rollback
+If a database migration caused the issue:
+1. SSH into a running backend container (or use a standalone migration task).
+2. Run `alembic downgrade -1` (or to the specific safe revision).
+3. Ensure the rolled-back code version matches the downgraded schema.
