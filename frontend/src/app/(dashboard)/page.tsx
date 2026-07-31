@@ -18,43 +18,44 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
+  Legend, 
   ResponsiveContainer,
   BarChart,
-  Bar,
-  Legend
+  Bar
 } from 'recharts';
-import { TrendingUp, DollarSign, Activity, AlertCircle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-
-// Mock data for charts
-const priceData = [
-  { date: 'Jul 1', yourPrice: 50, competitorAvg: 48 },
-  { date: 'Jul 5', yourPrice: 48, competitorAvg: 48 },
-  { date: 'Jul 10', yourPrice: 49, competitorAvg: 47 },
-  { date: 'Jul 15', yourPrice: 45, competitorAvg: 46 },
-  { date: 'Jul 20', yourPrice: 46, competitorAvg: 45 },
-  { date: 'Jul 25', yourPrice: 48, competitorAvg: 48 },
-  { date: 'Jul 30', yourPrice: 52, competitorAvg: 50 },
-];
+import { DollarSign, TrendingUp, Activity, AlertCircle, ArrowUpRight } from 'lucide-react';
 
 const revenueData = [
-  { date: 'Jul 1', revenue: 4000 },
-  { date: 'Jul 5', revenue: 4200 },
-  { date: 'Jul 10', revenue: 3800 },
-  { date: 'Jul 15', revenue: 5100 },
-  { date: 'Jul 20', revenue: 4900 },
-  { date: 'Jul 25', revenue: 5500 },
-  { date: 'Jul 30', revenue: 6200 },
+  { date: '1', revenue: 4000 },
+  { date: '2', revenue: 4200 },
+  { date: '3', revenue: 3800 },
+  { date: '4', revenue: 4500 },
+  { date: '5', revenue: 4800 },
+  { date: '6', revenue: 5100 },
+  { date: '7', revenue: 5400 },
+];
+
+const priceData = [
+  { date: 'Mon', yourPrice: 19.99, competitorAvg: 18.50 },
+  { date: 'Tue', yourPrice: 19.99, competitorAvg: 18.40 },
+  { date: 'Wed', yourPrice: 18.99, competitorAvg: 18.40 },
+  { date: 'Thu', yourPrice: 18.99, competitorAvg: 18.20 },
+  { date: 'Fri', yourPrice: 17.99, competitorAvg: 17.50 },
+  { date: 'Sat', yourPrice: 17.99, competitorAvg: 17.20 },
+  { date: 'Sun', yourPrice: 18.50, competitorAvg: 17.50 },
 ];
 
 const recommendations = [
-  { id: 1, sku: 'B08F22K', current: 49.99, recommended: 45.99, impact: '+$1,200', status: 'pending' },
-  { id: 2, sku: 'C99X100', current: 15.00, recommended: 17.50, impact: '+$400', status: 'accepted' },
-  { id: 3, sku: 'A11P002', current: 120.00, recommended: 110.00, impact: '+$2,500', status: 'pending' },
+  { id: '1', sku: 'SKU-1001', current: 24.99, recommended: 22.99, impact: '+$1,200', status: 'pending' },
+  { id: '2', sku: 'SKU-1002', current: 14.99, recommended: 15.99, impact: '+$850', status: 'pending' },
+  { id: '3', sku: 'SKU-1003', current: 39.99, recommended: 39.99, impact: '$0', status: 'optimal' },
+  { id: '4', sku: 'SKU-1004', current: 9.99, recommended: 8.99, impact: '+$340', status: 'applied' },
 ];
 
 const alerts = [
-  { id: 1, message: 'Competitor X dropped price on SKU B08F22K by 10%', type: 'warning' },
-  { id: 2, message: 'Forecast accuracy for category Electronics dropped below 80%', type: 'error' },
+  { id: '1', message: 'Competitor A dropped price by 15% on SKU-1001', type: 'warning' },
+  { id: '2', message: 'High demand forecasted for weekend for SKU-1002', type: 'info' },
+  { id: '3', message: 'API integration with Shopify failing', type: 'error' },
 ];
 
 export default function DashboardHome() {
@@ -103,7 +104,7 @@ export default function DashboardHome() {
           <CardContent>
             <div className="text-2xl font-bold">92.4%</div>
             <p className="text-xs text-muted-foreground flex items-center text-emerald-500 mt-1">
-              <ArrowUpRight className="h-3 w-3 mr-1" /> Target: {'>'}90%
+              <ArrowUpRight className="h-3 w-3 mr-1" /> Target: &gt;90%
             </p>
           </CardContent>
         </Card>
@@ -134,8 +135,8 @@ export default function DashboardHome() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={revenueData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                  <XAxis dataKey="date" stroke="#888888" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
                   <Tooltip formatter={(value) => [`$${value}`, "Revenue"]} />
                   <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -154,8 +155,8 @@ export default function DashboardHome() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={priceData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                  <XAxis dataKey="date" stroke="#888888" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#888888" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                   <Tooltip />
                   <Legend />
                   <Line type="monotone" dataKey="yourPrice" name="Your Price" stroke="#10b981" strokeWidth={2} dot={false} />

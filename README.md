@@ -6,16 +6,11 @@ This project is a smart, automated platform designed to help businesses figure o
 
 It is designed to be a complete software-as-a-service (SaaS) application, meaning multiple companies can use it securely at the same time (multi-tenant), and it integrates directly with stores like Shopify or WooCommerce to update prices automatically.
 
-## Screenshots
+## Application Preview
 
-### Desktop View
-![Desktop Dashboard](docs/desktop-view.png)
+![Application View](docs/application-view.png)
 
-### Tablet View
-![Tablet Dashboard](docs/tablet-view.png)
-
-### Mobile View
-![Mobile Dashboard](docs/mobile-view.png)
+This view provides an overview of the pricing engine dashboard, displaying real-time revenue trends, price competitiveness, AI-driven recommendations, and actionable alerts.
 
 ## Project Details
 

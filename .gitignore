@@ -1,2 +1,8 @@
 frontend/node_modules
 backend/venv
+checks.json
+job_log.txt
+run_e2e_and_push.sh
+screenshot-script/
+docs/tablet-view.png
+docs/mobile-view.png

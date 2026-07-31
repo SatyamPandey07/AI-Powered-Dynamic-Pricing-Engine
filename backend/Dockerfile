@@ -8,8 +8,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev && rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml poetry.lock* ./
-RUN pip install poetry && poetry export -f requirements.txt --output requirements.txt --without-hashes
+COPY requirements.txt ./
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
 # Final stage
