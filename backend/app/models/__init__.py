@@ -5,4 +5,5 @@ from .tenant import (
     PasswordHistory, ModelVersion,
     Competitor, CompetitorSKUMapping, WeatherSignal, EventSignal,
     ElasticityMeasurement, PricingTest, PriceRecommendation, PricingRule,
+    Integration, IntegrationCredentialHistory, SyncLog,
 )

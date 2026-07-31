@@ -57,3 +57,16 @@
 - `POST /api/rules`: Create a pricing guardrail rule.
 - `GET /api/rules`: List all pricing rules.
 - `PUT /api/rules/{id}`: Activate or deactivate a rule.
+
+## Platform Integrations
+- `POST /api/integrations`: Register a new Shopify, WooCommerce, or Custom integration.
+- `GET /api/integrations`: List all integrations.
+- `PUT /api/integrations/{id}`: Update sync config or rotate credentials.
+- `DELETE /api/integrations/{id}`: Disconnect an integration.
+- `POST /api/integrations/{id}/test`: Test connection and verify credentials.
+- `GET /api/integrations/{id}/sync-inventory`: Trigger manual inventory sync.
+- `GET /api/integrations/{id}/sync-sales-history`: Trigger manual sales sync.
+- `POST /api/integrations/{id}/push-prices`: Push price recommendations to platform.
+
+## Webhooks (Inbound)
+- `POST /api/webhooks/integrations/{integration_id}`: Receive and process platform webhooks (HMAC-SHA256 verified).

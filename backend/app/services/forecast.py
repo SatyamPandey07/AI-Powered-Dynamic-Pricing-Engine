@@ -1,12 +1,23 @@
 import pandas as pd
 import numpy as np
-from prophet import Prophet
-from statsmodels.tsa.arima.model import ARIMA
+try:
+    from prophet import Prophet
+    PROPHET_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    Prophet = None  # type: ignore
+    PROPHET_AVAILABLE = False
+try:
+    from statsmodels.tsa.arima.model import ARIMA
+    ARIMA_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    ARIMA = None  # type: ignore
+    ARIMA_AVAILABLE = False
 from sklearn.metrics import mean_absolute_percentage_error, mean_absolute_error, mean_squared_error
 import joblib
 import io
 import redis
 from app.config import settings
+
 
 redis_client = redis.from_url(settings.REDIS_URL)
 
