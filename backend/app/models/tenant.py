@@ -137,3 +137,47 @@ class ModelVersion(Base):
     activated_at = Column(DateTime(timezone=True))
     model_artifact = Column(String)
     parameters = Column(JSON)
+
+class Competitor(Base):
+    __tablename__ = "competitors"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    name = Column(String)
+    website_url = Column(String)
+    api_type = Column(String)
+    scrape_config = Column(JSON)
+    last_checked_at = Column(DateTime(timezone=True))
+    status = Column(String)
+    error_message = Column(String)
+    update_frequency_hours = Column(Integer, default=24)
+
+class CompetitorSKUMapping(Base):
+    __tablename__ = "competitor_sku_mappings"
+    id = Column(String, primary_key=True, index=True)
+    competitor_id = Column(String, ForeignKey("competitors.id"))
+    sku_id = Column(String, ForeignKey("skus.id"))
+    competitor_sku_id = Column(String)
+    competitor_product_url = Column(String)
+    last_price = Column(Float)
+    last_updated_at = Column(DateTime(timezone=True))
+
+class WeatherSignal(Base):
+    __tablename__ = "weather_signals"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    time = Column(DateTime(timezone=True), server_default=func.now())
+    location = Column(String)
+    temperature = Column(Float)
+    humidity = Column(Float)
+    precipitation = Column(Float)
+    condition = Column(String)
+    forecast_next_7_days = Column(JSON)
+
+class EventSignal(Base):
+    __tablename__ = "event_signals"
+    id = Column(String, primary_key=True, index=True)
+    org_id = Column(String, ForeignKey("organizations.id"))
+    event_name = Column(String)
+    event_date = Column(DateTime(timezone=True))
+    affected_skus = Column(JSON) # List of SKU IDs
+    impact_percent = Column(Float)

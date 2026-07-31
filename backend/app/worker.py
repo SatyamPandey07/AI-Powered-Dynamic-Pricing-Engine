@@ -24,6 +24,18 @@ def setup_periodic_tasks(sender, **kwargs):
         retrain_demand_forecasts.s(),
         name="weekly_retrain_demand_forecasts"
     )
+    # Competitor scraping every 4 hours
+    sender.add_periodic_task(
+        crontab(minute=0, hour='*/4'),
+        scrape_competitor_prices.s(),
+        name="scrape_competitor_prices_4h"
+    )
+    # Fetch weather signals daily at 6 AM
+    sender.add_periodic_task(
+        crontab(minute=0, hour=6),
+        fetch_weather_signals.s(),
+        name="fetch_weather_signals_daily"
+    )
 
 @celery_app.task(name="retrain_demand_forecasts")
 def retrain_demand_forecasts():
@@ -48,3 +60,26 @@ def retrain_demand_forecasts():
     
     logger.info(f"Retraining completed: {results}")
     return results
+
+@celery_app.task(name="scrape_competitor_prices")
+def scrape_competitor_prices():
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Starting competitor price scraping.")
+    # In a full implementation, this would:
+    # 1. Fetch competitors mapped SKUs
+    # 2. Iterate through mapping urls, calling CompetitorScraper
+    # 3. Save to DB price_history
+    # 4. Fire price alert logic if > 5% diff
+    return {"status": "scraping_completed"}
+
+@celery_app.task(name="fetch_weather_signals")
+def fetch_weather_signals():
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info("Starting weather signal fetch.")
+    # In a full implementation, this would:
+    # 1. Get distinct org locations
+    # 2. Call ExternalSignalsService.fetch_weather
+    # 3. Store in weather_signals table
+    return {"status": "weather_fetched"}

@@ -28,3 +28,16 @@
 - `GET /api/forecast/predict/{sku_id}`: Generate a forecast for the next N days.
 - `GET /api/forecast/accuracy/{sku_id}`: Retrieve model accuracy metrics (MAPE/MAE).
 - `POST /api/forecast/retrain`: Manually trigger the Celery retraining pipeline.
+
+## Competitor Tracking
+- `POST /api/competitors`: Register a new competitor to track.
+- `GET /api/competitors`: List configured competitors.
+- `PUT /api/competitors/{id}`: Update competitor scraping config.
+- `DELETE /api/competitors/{id}`: Deactivate a competitor.
+- `POST /api/competitors/{id}/sku-mapping`: Map an internal SKU to a competitor product.
+- `GET /api/prices/competitor/{sku_id}`: View the current lowest competitor prices for a SKU.
+- `GET /api/prices/competitor/{sku_id}/history`: View historical price trends.
+
+## External Signals
+- `POST /api/signals/weather`: Fetch weather for the organization's location.
+- `POST /api/signals/events`: Add a custom event affecting SKU demand.
