@@ -1,4 +1,4 @@
-from app.models.tenant import Organization, User, ApiKey, Sku, Supplier, Competitor, CompetitorSkuMapping, PriceHistory, SalesHistory, ForecastHistory, AuditLog
+from app.models.tenant import Organization, User, ApiKey, Sku, Supplier, Competitor, CompetitorSKUMapping, PriceHistory, SalesHistory, ForecastHistory, AuditLog
 from app.models.base import Base
 from app.security import verify_password, get_password_hash, create_access_token
 from app.middleware.tenant import TenantMiddleware
@@ -13,7 +13,7 @@ def test_imports():
     assert Sku.__tablename__ == 'skus'
     assert Supplier.__tablename__ == 'suppliers'
     assert Competitor.__tablename__ == 'competitors'
-    assert CompetitorSkuMapping.__tablename__ == 'competitor_sku_mappings'
+    assert CompetitorSKUMapping.__tablename__ == 'competitor_sku_mappings'
     assert PriceHistory.__tablename__ == 'price_history'
     assert SalesHistory.__tablename__ == 'sales_history'
     assert ForecastHistory.__tablename__ == 'forecast_history'
