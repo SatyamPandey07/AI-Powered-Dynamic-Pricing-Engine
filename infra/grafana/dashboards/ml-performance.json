@@ -1,0 +1,25 @@
+{
+  "title": "ML Model Performance",
+  "uid": "ml-perf",
+  "tags": [
+    "ml-model-performance"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "panels": [
+    {
+      "type": "text",
+      "title": "ML Model Performance Overview",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "content": "# ML Model Performance\nPlaceholder for ML Model Performance metrics."
+      }
+    }
+  ]
+}

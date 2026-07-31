@@ -1,0 +1,25 @@
+{
+  "title": "Integration Health",
+  "uid": "int-health",
+  "tags": [
+    "integration-health"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "panels": [
+    {
+      "type": "text",
+      "title": "Integration Health Overview",
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "content": "# Integration Health\nPlaceholder for Integration Health metrics."
+      }
+    }
+  ]
+}
