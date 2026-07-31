@@ -1,10 +1,21 @@
 import time
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Depends, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import make_asgi_app, Counter, Histogram
 from asgi_correlation_id import CorrelationIdMiddleware, correlation_id
 from pythonjsonlogger import jsonlogger
+
+from app.config import settings
+from app.middleware.tenant import TenantMiddleware
+from app.middleware.security import SecurityHeadersMiddleware
+from app.middleware.rate_limit import RateLimitMiddleware
+from app.routers import (
+    auth, orgs, users, api_keys, audit_logs, forecast, competitors, 
+    signals, prices, elasticity, optimize, rules, integrations, 
+    webhooks, outbound_webhooks
+)
 
 # Logging Setup
 logger = logging.getLogger()
@@ -15,7 +26,19 @@ logHandler.setFormatter(formatter)
 logger.addHandler(logHandler)
 
 app = FastAPI(title="Dynamic Pricing Engine API")
+
+# Middlewares
 app.add_middleware(CorrelationIdMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(TenantMiddleware)
 
 # Prometheus Metrics
 from app.metrics import REQUEST_COUNT, REQUEST_LATENCY
@@ -48,6 +71,23 @@ async def monitor_requests(request: Request, call_next):
     })
     
     return response
+
+# Routers
+app.include_router(auth.router)
+app.include_router(orgs.router)
+app.include_router(users.router)
+app.include_router(api_keys.router)
+app.include_router(audit_logs.router)
+app.include_router(forecast.router)
+app.include_router(competitors.router)
+app.include_router(signals.router)
+app.include_router(prices.router)
+app.include_router(elasticity.router)
+app.include_router(optimize.router)
+app.include_router(rules.router)
+app.include_router(integrations.router)
+app.include_router(webhooks.router)
+app.include_router(outbound_webhooks.router)
 
 @app.get("/health")
 async def health_check():
